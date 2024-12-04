@@ -2,38 +2,22 @@
 # Individual Project
 # Description : An approximation algorithm which contructs an ISP of a DAG.
 
-from collections import deque
+import networkx as nx
 
-def modifiedBfs(graph, start_node):
+def isometric_path_cover(graph, start_vertex):
+    
+    def modified_bfs(graph, start_vertex):
+        '''Executes a modified BFS algorithm which produces a directed acyclic graph'''
 
-    n = len(graph)                      # number of nodes in the graph
-    visited = [False] * n               # array of visited nodes
-    queue = deque([start_node])
-    visited[start_node] = True
-    traversal_order = []
+        dag = nx.digraph()
+        distances = nx.single_source_shortest_path_length(graph, start_vertex)
 
-    # begin bfs
+        for x, y in graph.edges(): # orients the edges from top to bottom. 
+            if distances[x] < distances[y]:
+                dag.add_edge(x, y)
+            elif distances[y] < distances[x]:
+                dag.add_edge(y, x)
 
-    while queue:
-        
-        node = queue.popleft()
-        traversal_order.append(node)
-        
-        # look at neighbours of the current node
-        for neighbour in range(n):
-            if graph[node][neighbour] == 1 and not visited[neighbour]:
+        '''if distances are equal then the edges are on the same layer and are not added to the DAG'''
 
-                # If there is an edge and the neighbor is not visited
-                queue.append(neighbour)
-                visited[neighbour] = True
-
-    return traversal_order
-
-input_graph = [
-    [0, 1, 1, 0],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [0, 1, 1, 0]
-]
-
-print(modifiedBfs(input_graph, 0))
+        return dag
