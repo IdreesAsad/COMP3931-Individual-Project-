@@ -32,3 +32,26 @@ def isometric_path_cover(graph, start_vertex):
             bipartite_graph.add_edge(f"L-{x}", f"R-{y}") # each edge now connects the left and right partition
 
         max_matching = nx.bipartite.maximum_matching(bipartite_graph)
+
+        # Finding paths from maximum matching set
+
+        paths = []
+        visited = set()
+
+        for vertex in dag_graph.nodes():
+            if vertex not in visited:
+                path = [vertex]
+                visited.add(vertex)
+                current = vertex
+
+                while f"L-{current}" in max_matching:
+                    next_vertex = max_matching[f"L-{current}"][2:] # skips past (R-) to get number
+                    path.append(next_vertex)
+                    visited.add(next_vertex)
+                    current = next_vertex
+
+                paths.append(path)
+
+        return paths
+            
+
