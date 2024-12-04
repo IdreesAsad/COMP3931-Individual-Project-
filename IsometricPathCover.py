@@ -38,7 +38,8 @@ def isometric_path_cover(graph, start_vertex):
             right_partition.add(f"R-{y}")
             bipartite_graph.add_edge(f"L-{x}", f"R-{y}") # each edge now connects the left and right partition
 
-        nx.set_node_attributes(bipartite_graph, {node: 0 for node in left_partition}, "bipartite")
+        # Ensures the graph is connected
+        nx.set_node_attributes(bipartite_graph, {node: 0 for node in left_partition}, "bipartite") 
         nx.set_node_attributes(bipartite_graph, {node: 1 for node in right_partition}, "bipartite")
 
         print("Bipartite Graph Nodes:", bipartite_graph.nodes())
@@ -50,6 +51,12 @@ def isometric_path_cover(graph, start_vertex):
         # Finding paths from maximum matching set
         matched_edges = {int(u[2:]): int(v[2:]) for u, v in max_matching.items() if u.startswith("L-")}
         print("matched edges:", matched_edges)
+
+        return matched_edges
+
+    def matching_paths(dag_graph, matched_edges):
+
+        'Finds the paths in the DAG from the maximum matching'
 
         paths = []
         visited = set()
@@ -76,7 +83,8 @@ def isometric_path_cover(graph, start_vertex):
         return paths
             
     dag = modified_bfs(graph, start_vertex)
-    pathcover_dag = bipartite(dag)
+    matched_edges = bipartite(dag)
+    pathcover_dag = matching_paths(dag, matched_edges)
 
     isometric_paths = []
     for path in pathcover_dag:
@@ -86,7 +94,7 @@ def isometric_path_cover(graph, start_vertex):
 
 G = nx.Graph()
 G.add_edges_from([(1, 2), (1, 3), (2, 4), (3, 5), (4, 5)])
-start = 1
+start = 4
 paths = isometric_path_cover(G, start)
 print("Isometric Path Cover:")
 for path in paths:
