@@ -3,6 +3,7 @@
 # Description : An approximation algorithm which contructs an ISP of a DAG.
 
 import networkx as nx
+import matplotlib.pyplot as plt
 
 def isometric_path_cover(graph, start_vertex):
     
@@ -81,7 +82,8 @@ def isometric_path_cover(graph, start_vertex):
 
 
         return paths
-            
+
+        
     dag = modified_bfs(graph, start_vertex)
     matched_edges = bipartite(dag)
     pathcover_dag = matching_paths(dag, matched_edges)
@@ -92,10 +94,29 @@ def isometric_path_cover(graph, start_vertex):
 
     return isometric_paths
 
-G = nx.Graph()
-G.add_edges_from([(1, 2), (1, 3), (2, 4), (3, 5), (4, 5)])
-start = 4
-paths = isometric_path_cover(G, start)
+
+def draw_path(graph, paths):
+
+    colors = plt.cm.get_cmap("tab10", len(paths))  # Uses distinct colours
+
+    pos = nx.spring_layout(graph) 
+    nx.draw(graph, pos, with_labels=True, node_color="lightgray", edge_color="gray", node_size=500)
+
+    # Highlighting paths
+    for i, path in enumerate(paths):
+        path_edges = [(path[j], path[j+1]) for j in range(len(path) - 1)]
+        nx.draw_networkx_edges(graph, pos, edgelist=path_edges, edge_color=[colors(i)], width=2)
+        nx.draw_networkx_nodes(graph, pos, nodelist=path, node_color=[colors(i)], node_size=600)
+
+    plt.title("Isometric Paths")
+    plt.show()
+
+
+G6 = nx.Graph()
+G6.add_edges_from([(1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5)])
+start = 3
+paths = isometric_path_cover(G6, start)
+draw_path(G6, paths)
 print("Isometric Path Cover:")
 for path in paths:
     print(path)
