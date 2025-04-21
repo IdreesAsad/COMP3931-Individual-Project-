@@ -1,6 +1,6 @@
 # Author: Idrees Asad
 # Individual Project
-# Description : An approximation algorithm which contructs an ISP of a DAG.
+# Description : An approximation algorithm which constructs an ISP of a DAG.
 
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -135,8 +135,22 @@ def best_start_node(graph):
 
 
 #Input data
+
 G = nx.Graph()
-G.add_edges_from([(1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5)])
+edges = [
+    (1, 12), (2, 12), (3, 12),
+    (4, 11), (5, 10),
+    (6, 12), (6, 8),
+    (7, 12), (7, 9),
+    (8, 10), (9, 11),
+    (10, 5), (11, 4),
+    (12, 1), (12, 2), (12, 3), (12, 6), (12, 7)
+]
+
+
+# Add nodes and edges
+G.add_nodes_from(range(1, 13))
+G.add_edges_from(edges)
 
 best_start, best_paths = best_start_node(G)
 print(f"Optimal Isometric Path Cover starting from node {best_start}:")
